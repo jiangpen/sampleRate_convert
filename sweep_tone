@@ -1,0 +1,34 @@
+
+
+import wave, struct, math
+
+sampleRate = 48000.0 # hertz
+duration = 5.0       # seconds
+
+# Use different frequencies for the left and right channels
+rsFreq = 150.00  # A
+lsFreq =  150.00  # C
+
+rFreq = 1000.00  # A
+lFreq =  1000.00  # C
+vol=0.5 #-6db
+
+wavef = wave.open('sound.wav','w')
+wavef.setnchannels(2) # stereo
+wavef.setsampwidth(2) 
+wavef.setframerate(sampleRate)
+
+numofsample=int(duration * sampleRate)
+numoffreq=float(numofsample)/(rFreq-rsFreq+1)
+
+
+for i in range(numofsample):
+    currentF=float(rsFreq+i/numoffreq)
+
+
+    sample=32767.0*math.cos(currentF*math.pi*float(i)/float(sampleRate))
+    r = int(sample*vol)
+    wavef.writeframesraw( struct.pack('<hh', r, r ) )
+
+wavef.writeframes('')
+wavef.close()
